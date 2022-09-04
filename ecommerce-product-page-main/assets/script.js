@@ -42,10 +42,6 @@
 	});
 	$dismiss_modal.addEventListener("click", toggleModal);
 	$product_main_image.addEventListener("click", toggleModal);
-	var $product_previous_image = document.querySelector(".product_previous_image");
-	$product_previous_image.addEventListener("click", function (e) {
-		console.log(e.target);
-	});
 	// Event Handlers
 
 	// FUNCTIONS
@@ -58,9 +54,6 @@
 		$thumbnail.classList.add("active");
 		$main_container.src = $thumbnail.childNodes[1].src.replace("-thumbnail", "");
 	}
-	function emptyCart(e) {}
-
-	function addCartHandler() {}
 
 	function toggleModal() {
 		$modal.classList.toggle("active");
@@ -83,12 +76,70 @@
 			var $main_modal_image = document.querySelector(
 				".modal_content .product_main_image"
 			);
-			$modal_thumbnail_images.forEach(($image) => {
+			$modal_thumbnail_images.forEach(($image, idx) => {
 				$image.addEventListener(
 					"click",
 					thumbnailHandler.bind(null, $modal_thumbnail_images, $image, $main_modal_image)
 				);
+				$image.dataset.id = idx;
+			});
+			const btn_previous = document.querySelector(
+				".product_modal > .modal_content .product_previous_image"
+			);
+			const btn_next = document.querySelector(
+				".product_modal > .modal_content .product_next_image"
+			);
+			btn_previous.addEventListener("click", function (e) {
+				let $currentImage = findActiveModalImage($modal_thumbnail_images);
+				if (parseInt($currentImage.dataset.id) == 0) return;
+				changeModalImage(
+					"backward",
+					$modal_thumbnail_images,
+					$currentImage,
+					$main_modal_image
+				);
+			});
+			btn_next.addEventListener("click", function (e) {
+				let $currentImage = findActiveModalImage($modal_thumbnail_images);
+				if (parseInt($currentImage.dataset.id) === $modal_thumbnail_images.length - 1)
+					return;
+
+				changeModalImage(
+					"forward",
+					$modal_thumbnail_images,
+					$currentImage,
+					$main_modal_image
+				);
 			});
 		}
 	}
+
+	function findActiveModalImage($modal_thumbnail_images) {
+		return [...$modal_thumbnail_images].find(($el) => $el.classList.contains("active"));
+	}
+	function changeModalImage(
+		direction,
+		$modal_thumbnail_images,
+		$currentImage,
+		$main_modal_image
+	) {
+		let $loadImage;
+		let $thumbnail_images = [...$modal_thumbnail_images];
+		switch (direction) {
+			case "forward":
+				$loadImage = $thumbnail_images.find(
+					($el) => parseInt($el.dataset.id) == parseInt($currentImage.dataset.id) + 1
+				);
+				break;
+			case "backward":
+				$loadImage = $thumbnail_images.find(
+					($el) => parseInt($el.dataset.id) == parseInt($currentImage.dataset.id) - 1
+				);
+				break;
+		}
+		thumbnailHandler($modal_thumbnail_images, $loadImage, $main_modal_image);
+	}
+	function emptyCart(e) {}
+
+	function addCartHandler() {}
 })();
