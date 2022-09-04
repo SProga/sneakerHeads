@@ -76,8 +76,24 @@ button {
 	gap: 50px;
 }
 .navigation__cart {
+	position: relative;
 	background: none;
 	border: none;
+}
+.navigation__cart::after {
+	content: attr(data-amount);
+	position: absolute;
+	width: 21px;
+	height: 21px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color:hsl(0, 0%, 100%);
+	background-color: hsl(26, 100%, 55%);
+	top:-12px;
+	right:-13px;
+	font-weight: 700;
 }
 .navigation__cart_wrapper {
 	position: relative;
@@ -403,4 +419,5 @@ button {
 }
 .modal_content .product__controls.modal_open {
 	display: block;
+}
 }
